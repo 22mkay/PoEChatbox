@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Student
  */
 
-public clas LoginTest {
+public class LoginTest {
     private Login login;
 
     @Before 
