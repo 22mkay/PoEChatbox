@@ -4,6 +4,9 @@
  */
 package com.mycompany.poechatbox;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  *
  * @author THE ONE
