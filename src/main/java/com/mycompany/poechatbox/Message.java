@@ -82,7 +82,23 @@ public class Message {
         return totalMessagesSent;
     }
     
-    public void storeMessage() {
-        // Placeholder: We will add the JSON file writing logic in the next iteration[cite: 21, 23]
+    public void storeMessage(String messageID, String messageHash, String recipient, String messageText) {
+        // Constructs a manually formatted JSON string mapping variables
+        String jsonEntry = "{\n" +
+                "  \"MessageID\": \"" + messageID + "\",\n" +
+                "  \"MessageHash\": \"" + messageHash + "\",\n" +
+                "  \"Recipient\": \"" + recipient + "\",\n" +
+                "  \"Message\": \"" + messageText + "\"\n" +
+                "}\n";
+
+        try {
+            // The 'true' parameter tells FileWriter to append to the file instead of overwriting it
+            FileWriter writer = new FileWriter("messages.json", true);
+            writer.write(jsonEntry);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while storing the message to JSON.");
+            e.printStackTrace();
+        }
     }
 }
