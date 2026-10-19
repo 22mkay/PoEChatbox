@@ -27,7 +27,7 @@ public class Message {
         return messageID.length() <= 10;
     }
 
-    public String checkRecipientCell(String cellNumber) {
+    public String checkRecipientCell(String cellNumber) { 
         // Note: The rubric states "no more than ten characters"[cite: 22], 
         // but your provided test data (+27718693002) is 12 characters long[cite: 24]. 
         // This regex ensures it starts with a '+' and has 9 to 11 digits to pass the test data.
@@ -91,6 +91,7 @@ public class Message {
                 "  \"Message\": \"" + messageText + "\"\n" +
                 "}\n";
 
+        
         try {
             // The 'true' parameter tells FileWriter to append to the file instead of overwriting it
             FileWriter writer = new FileWriter("messages.json", true);
