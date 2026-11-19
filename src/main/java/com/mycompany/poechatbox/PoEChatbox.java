@@ -4,41 +4,35 @@
 
 package com.mycompany.poechatbox;
 
-
 import java.util.Scanner;
-
-/**
- *
- * @author THE ONE
- */
 
 public class PoEChatbox {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Login loginSystem = new Login();
-        Message messageSystem = new Message(); // Initialize the new Message class
+        Message messageSystem = new Message();
 
         System.out.println("--- Register a New Account ---");
         System.out.print("Enter first name: ");
         String firstName = scanner.nextLine();
-        
+
         System.out.print("Enter last name: ");
         String lastName = scanner.nextLine();
-        
+
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
-        
+
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
-        
+
         System.out.print("Enter cell phone number (e.g., +27838968976): ");
         String cellNumber = scanner.nextLine();
 
         if (!loginSystem.checkCellPhoneNumber(cellNumber)) {
-             System.out.println("Cell phone number incorrectly formatted or does not contain international code.");
+            System.out.println("Cell phone number incorrectly formatted or does not contain international code.");
         } else {
-             System.out.println("Cell phone number successfully added.");
+            System.out.println("Cell phone number successfully added.");
         }
 
         String registrationResult = loginSystem.registerUser(username, password, firstName, lastName);
@@ -48,14 +42,13 @@ public class PoEChatbox {
             System.out.println("\n--- Login to Your Account ---");
             System.out.print("Enter username: ");
             String loginUser = scanner.nextLine();
-            
+
             System.out.print("Enter password: ");
             String loginPass = scanner.nextLine();
-            
+
             boolean isMatch = loginSystem.loginUser(loginUser, loginPass);
             System.out.println(loginSystem.returnLoginStatus(isMatch));
 
-            // --- PART 2: THE MESSAGE MENU LOOP ---
             if (isMatch) {
                 boolean running = true;
                 while (running) {
@@ -64,48 +57,59 @@ public class PoEChatbox {
                     System.out.println("2) Show recently sent messages");
                     System.out.println("3) Quit");
                     System.out.print("Choose an option: ");
-                    
+
                     int menuChoice = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine();
 
                     if (menuChoice == 1) {
                         System.out.print("How many messages do you wish to enter? ");
                         int numMessages = scanner.nextInt();
-                        scanner.nextLine(); // Consume newline
-                        
-                        for (int i = 1; i <= numMessages; i++) {
+                        scanner.nextLine();
+
+                        // Number messages starting from 0
+                        for (int i = 0; i < numMessages; i++) {
                             System.out.println("\n--- Message " + i + " ---");
-                            
-                            // Get Recipient
-                            System.out.print("Enter recipient cell number: ");
-                            String recNumber = scanner.nextLine();
-                            System.out.println(messageSystem.checkRecipientCell(recNumber));
-                            
-                            // Get Message
-                            System.out.print("Enter your message (max 250 characters): ");
-                            String msgText = scanner.nextLine();
-                            System.out.println(messageSystem.checkMessageLength(msgText));
-                            
-                            // Generate Data
+
+                            // Keep asking until recipient cell is valid
+                            String recNumber;
+                            String recResult;
+                            do {
+                                System.out.print("Enter recipient cell number: ");
+                                recNumber = scanner.nextLine();
+                                recResult = messageSystem.checkRecipientCell(recNumber);
+                                System.out.println(recResult);
+                            } while (!recResult.contains("successfully"));
+
+                            // Keep asking until message length is valid
+                            String msgText;
+                            String lenResult;
+                            do {
+                                System.out.print("Enter your message (max 250 characters): ");
+                                msgText = scanner.nextLine();
+                                lenResult = messageSystem.checkMessageLength(msgText);
+                                System.out.println(lenResult);
+                            } while (!lenResult.equals("Message ready to send."));
+
+                            // Generate ID and Hash
                             String msgID = messageSystem.generateMessageID();
                             String msgHash = messageSystem.createMessageHash(msgID, i, msgText);
-                            
-                            // Display Full Details
-                            System.out.println("\nMessage Details:");
-                            System.out.println("Message ID: " + msgID);
-                            System.out.println("Message Hash: " + msgHash);
-                            System.out.println("Recipient: " + recNumber);
-                            System.out.println("Message: " + msgText);
-                            
+
                             // Action Menu
                             System.out.println("\nOptions: 1) Send  2) Disregard  3) Store");
                             System.out.print("Selection: ");
                             int action = scanner.nextInt();
-                            scanner.nextLine(); // Consume newline
-                            
+                            scanner.nextLine();
+
                             System.out.println(messageSystem.SentMessage(action));
-                            
-                            if (action == 3) {
+
+                            // Show full details after the message is sent
+                            if (action == 1) {
+                                System.out.println("\nMessage Details:");
+                                System.out.println("Message ID: " + msgID);
+                                System.out.println("Message Hash: " + msgHash);
+                                System.out.println("Recipient: " + recNumber);
+                                System.out.println("Message: " + msgText);
+                            } else if (action == 3) {
                                 messageSystem.storeMessage(msgID, msgHash, recNumber, msgText);
                             }
                         }
@@ -118,7 +122,6 @@ public class PoEChatbox {
                         System.out.println("Exiting QuickChat...");
                     } else {
                         System.out.println("Invalid option.");
-                        //Final test for GitHub actions
                     }
                 }
             }
