@@ -50,12 +50,18 @@ public class PoEChatbox {
             System.out.println(loginSystem.returnLoginStatus(isMatch));
 
             if (isMatch) {
+                String senderName = firstName + " " + lastName;
+
+                // Load any previously stored messages from messages.json into the arrays
+                messageSystem.loadStoredMessagesFromJSON(senderName);
+
                 boolean running = true;
                 while (running) {
                     System.out.println("\nWelcome to QuickChat.");
                     System.out.println("1) Send Messages");
                     System.out.println("2) Show recently sent messages");
                     System.out.println("3) Quit");
+                    System.out.println("4) Stored Messages");
                     System.out.print("Choose an option: ");
 
                     int menuChoice = scanner.nextInt();
@@ -102,24 +108,78 @@ public class PoEChatbox {
 
                             System.out.println(messageSystem.SentMessage(action));
 
-                            // Show full details after the message is sent
                             if (action == 1) {
+                                messageSystem.addMessageRecord(senderName, recNumber, msgText, "Sent", msgID, msgHash);
                                 System.out.println("\nMessage Details:");
                                 System.out.println("Message ID: " + msgID);
                                 System.out.println("Message Hash: " + msgHash);
                                 System.out.println("Recipient: " + recNumber);
                                 System.out.println("Message: " + msgText);
+                            } else if (action == 2) {
+                                messageSystem.addMessageRecord(senderName, recNumber, msgText, "Disregard", msgID, msgHash);
                             } else if (action == 3) {
                                 messageSystem.storeMessage(msgID, msgHash, recNumber, msgText);
+                                messageSystem.addMessageRecord(senderName, recNumber, msgText, "Stored", msgID, msgHash);
                             }
                         }
                         System.out.println("\nTotal messages successfully sent: " + messageSystem.returnTotalMessagess());
 
                     } else if (menuChoice == 2) {
                         System.out.println("Coming Soon.");
+
                     } else if (menuChoice == 3) {
                         running = false;
                         System.out.println("Exiting QuickChat...");
+
+                    } else if (menuChoice == 4) {
+                        boolean inStoredMenu = true;
+                        while (inStoredMenu) {
+                            System.out.println("\n--- Stored Messages Menu ---");
+                            System.out.println("a) Display sender and recipient of all stored messages");
+                            System.out.println("b) Display the longest stored message");
+                            System.out.println("c) Search for a message ID");
+                            System.out.println("d) Search for all messages for a particular recipient");
+                            System.out.println("e) Delete a message using the message hash");
+                            System.out.println("f) Display full report of all stored messages");
+                            System.out.println("g) Back to Main Menu");
+                            System.out.print("Choose an option: ");
+
+                            String subChoice = scanner.nextLine().trim().toLowerCase();
+
+                            switch (subChoice) {
+                                case "a":
+                                    System.out.println("\n" + messageSystem.displaySenderAndRecipient());
+                                    break;
+                                case "b":
+                                    System.out.println("\nLongest Message: " + messageSystem.getLongestMessage());
+                                    break;
+                                case "c":
+                                    System.out.print("Enter Message ID to search: ");
+                                    String searchID = scanner.nextLine();
+                                    System.out.println("\n" + messageSystem.searchByMessageID(searchID));
+                                    break;
+                                case "d":
+                                    System.out.print("Enter Recipient cell number to search: ");
+                                    String searchRec = scanner.nextLine();
+                                    System.out.println("\n" + messageSystem.searchByRecipient(searchRec));
+                                    break;
+                                case "e":
+                                    System.out.print("Enter Message Hash to delete: ");
+                                    String deleteHash = scanner.nextLine();
+                                    System.out.println("\n" + messageSystem.deleteByMessageHash(deleteHash));
+                                    break;
+                                case "f":
+                                    System.out.println("\n--- Full Message Report ---");
+                                    System.out.println(messageSystem.displayReport());
+                                    break;
+                                case "g":
+                                    inStoredMenu = false;
+                                    break;
+                                default:
+                                    System.out.println("Invalid option. Please choose a through g.");
+                            }
+                        }
+
                     } else {
                         System.out.println("Invalid option.");
                     }
