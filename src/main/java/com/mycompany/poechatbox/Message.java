@@ -46,7 +46,7 @@ public class Message {
             return "Message ready to send.";
         }
         int excess = message.length() - 250;
-        return "Message exceeds 250 characters by " + excess + ", please reduce size.";
+        return "Message exceeds 250 characters by " + excess + "; please reduce the size.";
     }
 
     // Generates a 10-digit Message ID using string manipulation instead of String.format
@@ -57,6 +57,10 @@ public class Message {
             id.append(random.nextInt(10));
         }
         return id.toString();
+    }
+
+    public boolean checkMessageID(String messageID) {
+        return messageID != null && messageID.length() <= 10;
     }
 
     // Strips punctuation and formats hash as XX:0:FIRSTLAST
@@ -77,7 +81,7 @@ public class Message {
                 totalMessagesSent++;
                 return "Message successfully sent.";
             case 2:
-                return "Press 0 to delete message.";
+                return "Press 0 to delete the message.";
             case 3:
                 return "Message successfully stored.";
             default:
